@@ -1,15 +1,27 @@
 class PhotosController < ApplicationController
-  skip_before_action :authenticate_user!, :only => [:index, :show]
   
+  # skip_before_action :authenticate_user!, :only => [:index, :show]    # whitelists those actions from the overarching authenticate_user command in application_controller
+    
   def favorites
     @photos = current_user.liked_photos
     
     render("photos/favorites.html.erb")
   end
-  
+    
   def index
     @photos = Photo.all
-
+    
+  
+    if current_user != nil 
+      @user_id = current_user.id
+    end
+    
+    @comments = Comment.all
+    @comment = Comment.new
+    
+    @likes = Like.all
+    @like = Like.new
+    
     render("photos/index.html.erb")
   end
 
@@ -30,7 +42,7 @@ class PhotosController < ApplicationController
 
     @photo.caption = params[:caption]
     @photo.image = params[:image]
-    @photo.user_id = current_user.id
+    @photo.user_id = current_user.id      # By looking id up directly server side, protects against user passing another user's id in the params
 
     save_status = @photo.save
 
@@ -75,4 +87,3 @@ class PhotosController < ApplicationController
     end
   end
 end
-
