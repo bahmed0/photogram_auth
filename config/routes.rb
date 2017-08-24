@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  root "photos#index"
   
+  root "photos#index"
   devise_for :users
   
   get "/my_likes", :controller => "photos", :action => "favorites"
